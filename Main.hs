@@ -6,6 +6,7 @@ import Control.Exception
 import Control.Concurrent
 import Control.Monad (when)
 import Control.Monad.Fix (fix)
+--import Lines
 
 main :: IO ()
 main = do
@@ -33,10 +34,12 @@ runConn (sock, _) chan msgNum = do
     hdl <- socketToHandle sock ReadWriteMode
     hSetBuffering hdl NoBuffering
 
-    hPutStrLn hdl "Hi, what's your name?"
-    name <- fmap init (hGetLine hdl)
-    broadcast ("--> " ++ name ++ " entered chat.")
-    hPutStrLn hdl ("Welcome " ++ name ++ "!")
+    --hPutStrLn hdl "Hi, what's your name?"
+    joinRequest <- fmap init (hGetLine hdl)
+    let requestSplit = lines joinRequest
+
+    broadcast ("--> " ++ head (requestSplit) ++ " entered chat.")
+    hPutStrLn hdl ("Welcome " ++ head (requestSplit) ++ "!")
 
     commLine <- dupChan chan
 
@@ -53,8 +56,8 @@ runConn (sock, _) chan msgNum = do
             -- if an exception is caught, send a message and break the loop
             "quit"  -> hPutStrLn hdl "Bye!"
             --else continue looping
-            _       -> broadcast (name ++ ": " ++ line) >> loop
+            _       -> broadcast (head (requestSplit) ++ ": " ++ line) >> loop
 
     killThread reader
-    broadcast ("<-- " ++ name ++ " left.")
+    broadcast ("<-- " ++ head (requestSplit) ++ " left.")
     hClose hdl
