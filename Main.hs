@@ -34,14 +34,19 @@ runConn (sock, _) chan msgNum = do
     hdl <- socketToHandle sock ReadWriteMode
     hSetBuffering hdl NoBuffering
 
-    --hPutStrLn hdl "Hi, what's your name?"
+    hPutStrLn hdl "Listening..."
     join_chatroom <- fmap init (hGetLine hdl)
     client_ip <- fmap init (hGetLine hdl)
-    port <- fmap init (hGetLine hdl)
+    port_ <- fmap init (hGetLine hdl)
     client_name <- fmap init (hGetLine hdl)
 
-    broadcast ("--> " ++ client_name ++ " entered chat.")
-    hPutStrLn hdl ("Welcome " ++ client_name ++ "!")
+    let joinChatroom = dropWhile (/=' ') join_chatroom
+    let clientIP = dropWhile (/=' ') client_ip
+    let port = dropWhile (/=' ') port_
+    let clientName = dropWhile (/=' ') client_name
+
+    broadcast ("--> " ++ clientName ++ " entered chat.")
+    hPutStrLn hdl ("Welcome " ++ clientName ++ "!")
 
     commLine <- dupChan chan
 
@@ -58,8 +63,8 @@ runConn (sock, _) chan msgNum = do
             -- if an exception is caught, send a message and break the loop
             "quit"  -> hPutStrLn hdl "Bye!"
             --else continue looping
-            _       -> broadcast (client_name ++ ": " ++ line) >> loop
+            _       -> broadcast (clientName ++ ": " ++ line) >> loop
 
     killThread reader
-    broadcast ("<-- " ++ client_name ++ " left.")
+    broadcast ("<-- " ++ clientName ++ " left.")
     hClose hdl
