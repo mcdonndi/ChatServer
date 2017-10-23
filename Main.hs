@@ -35,11 +35,13 @@ runConn (sock, _) chan msgNum = do
     hSetBuffering hdl NoBuffering
 
     --hPutStrLn hdl "Hi, what's your name?"
-    joinRequest <- fmap init (hGetLine hdl)
-    let requestSplit = lines joinRequest
+    join_chatroom <- fmap init (hGetLine hdl)
+    client_ip <- fmap init (hGetLine hdl)
+    port <- fmap init (hGetLine hdl)
+    client_name <- fmap init (hGetLine hdl)
 
-    broadcast ("--> " ++ head (requestSplit) ++ " entered chat.")
-    hPutStrLn hdl ("Welcome " ++ head (requestSplit) ++ "!")
+    broadcast ("--> " ++ client_name ++ " entered chat.")
+    hPutStrLn hdl ("Welcome " ++ client_name ++ "!")
 
     commLine <- dupChan chan
 
@@ -56,8 +58,8 @@ runConn (sock, _) chan msgNum = do
             -- if an exception is caught, send a message and break the loop
             "quit"  -> hPutStrLn hdl "Bye!"
             --else continue looping
-            _       -> broadcast (head (requestSplit) ++ ": " ++ line) >> loop
+            _       -> broadcast (client_name ++ ": " ++ line) >> loop
 
     killThread reader
-    broadcast ("<-- " ++ head (requestSplit) ++ " left.")
+    broadcast ("<-- " ++ client_name ++ " left.")
     hClose hdl
