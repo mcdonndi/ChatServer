@@ -65,7 +65,7 @@ runConn (sock, _) chan msgNum = do
         line <- fmap init (hGetLine hdl)
         case line of
             -- if an exception is caught, send a message and break the loop
-            "quit"  -> hPutStrLn hdl "Bye!"
+            "quit"  -> hPutStrLn hdl ("DISCONNECT: 0\nPORT: 0\nCLIENT_NAME:" ++ clientName)
             --else continue looping
             _       -> broadcast (clientName ++ ": " ++ line) >> loop
 
