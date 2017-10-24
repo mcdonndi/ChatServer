@@ -45,8 +45,12 @@ runConn (sock, _) chan msgNum = do
     let port = dropWhile (/=' ') port_
     let clientName = dropWhile (/=' ') client_name
 
+    hPutStrLn hdl ("JOINED_CHATROOM: " ++ joinChatroom)
+    hPutStrLn hdl ("SERVER_IP: [IP address of chat room]")
+    hPutStrLn hdl ("PORT: [port number of chat room]")
+    hPutStrLn hdl ("ROOM_REF: 1")
+    hPutStrLn hdl ("JOIN_ID: 99")
     broadcast ("--> " ++ clientName ++ " entered chat.")
-    hPutStrLn hdl ("Welcome " ++ clientName ++ "!")
 
     commLine <- dupChan chan
 
