@@ -62,18 +62,19 @@ runConn (sock, _) chan msgNum = do
 
     -- read lines from the socket and echo them back to the user
     handle (\(SomeException _) -> return()) $ fix $ \loop -> do
-        chatroom <- fmap init (hGetLine hdl)
+        chatroom_ <- fmap init (hGetLine hdl)
         join_id <- fmap init (hGetLine hdl)
         client_name <- fmap init (hGetLine hdl)
         message_ <- fmap init (hGetLine hdl)
-        let chatroomKey = takeWhile (/=':') chatroom
+        let chatroomKey = takeWhile (/=':') chatroom_
+        let chatroom = dropWhile (/=' ') chatroom_
         let clientName = dropWhile (/=' ') client_name
         let message = dropWhile (/=' ') message_
         case chatroomKey of
             -- if an exception is caught, send a message and break the loop
             "LEAVE_CHATROOM"  -> hPutStrLn hdl ("DISCONNECT: 0\nPORT: 0\nCLIENT_NAME:" ++ clientName)
             -- else continue looping
-            _       -> broadcast (clientName ++ ": " ++ message) >> loop
+            _       -> broadcast ("CHAT:" ++ chatroom ++ "\n\nCLIENT_NAME:" ++ clientName ++ "\n\nMESSAGE:" ++ message) >> loop
 
     killThread reader
     broadcast ("<-- " ++ clientName ++ " left.")
