@@ -79,3 +79,11 @@ runConn (sock, _) chan msgNum = do
     killThread reader
     broadcast ("<-- " ++ clientName ++ " left.")
     hClose hdl
+
+checkChatroom :: String -> [(Int,String)] -> Bool
+checkChatroom _ [] = False
+checkChatroom chatroom (x:xs) = if snd x == chatroom then True else checkChatroom chatroom xs
+
+addChatroom :: String -> [(Int,String)] -> [(Int,String)]
+addChatroom chatroom [] = [(1, chatroom)]
+addChatroom chatroom xs = if checkChatroom chatroom xs == True then xs else ((length xs) + 1,chatroom):xs
