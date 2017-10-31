@@ -45,6 +45,9 @@ runConn (sock, _) chan msgNum = do
     let port = dropWhile (/=' ') port_
     let clientName = dropWhile (/=' ') client_name
 
+    let chatrooms = addToList joinChatroom chatrooms
+    let clients = addToList clientName clients
+
     hPutStrLn hdl ("JOINED_CHATROOM: " ++ joinChatroom)
     hPutStrLn hdl ("SERVER_IP: [IP address of chat room]")
     hPutStrLn hdl ("PORT: [port number of chat room]")
@@ -80,10 +83,10 @@ runConn (sock, _) chan msgNum = do
     broadcast ("<-- " ++ clientName ++ " left.")
     hClose hdl
 
-checkChatroom :: String -> [(Int,String)] -> Bool
-checkChatroom _ [] = False
-checkChatroom chatroom (x:xs) = if snd x == chatroom then True else checkChatroom chatroom xs
+checkList :: String -> [(Int,String)] -> Bool
+checkList _ [] = False
+checkList item (x:xs) = if snd x == item then True else checkList item xs
 
-addChatroom :: String -> [(Int,String)] -> [(Int,String)]
-addChatroom chatroom [] = [(1, chatroom)]
-addChatroom chatroom xs = if checkChatroom chatroom xs == True then xs else ((length xs) + 1,chatroom):xs
+addToList :: String -> [(Int,String)] -> [(Int,String)]
+addToList item [] = [(1, item)]
+addToList item xs = if checkList item xs == True then xs else ((length xs) + 1,item):xs
