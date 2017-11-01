@@ -40,13 +40,13 @@ runConn (sock, _) chan msgNum = do
     port_ <- fmap init (hGetLine hdl)
     client_name <- fmap init (hGetLine hdl)
 
-    let joinChatroom = dropWhile (/=' ') join_chatroom
-    let clientIP = dropWhile (/=' ') client_ip
-    let port = dropWhile (/=' ') port_
-    let clientName = dropWhile (/=' ') client_name
+    let joinChatroom = tail $ dropWhile (/=' ') join_chatroom
+    let clientIP = tail $ dropWhile (/=' ') client_ip
+    let port = tail $ dropWhile (/=' ') port_
+    let clientName = tail $ dropWhile (/=' ') client_name
 
-    let chatrooms = addToList joinChatroom chatrooms
-    let clients = addToList clientName clients
+    --let chatrooms = addToList joinChatroom chatrooms
+    --let clients = addToList clientName clients
 
     hPutStrLn hdl ("JOINED_CHATROOM: " ++ joinChatroom)
     hPutStrLn hdl ("SERVER_IP: [IP address of chat room]")
@@ -77,7 +77,7 @@ runConn (sock, _) chan msgNum = do
             -- if an exception is caught, send a message and break the loop
             "LEAVE_CHATROOM"  -> hPutStrLn hdl ("DISCONNECT: 0\nPORT: 0\nCLIENT_NAME:" ++ clientName)
             -- else continue looping
-            _       -> broadcast ("CHAT:" ++ chatroom ++ "\n\nCLIENT_NAME:" ++ clientName ++ "\n\nMESSAGE:" ++ message) >> loop
+            _       -> broadcast ("CHAT:" ++ chatroom ++ "\nCLIENT_NAME:" ++ clientName ++ "\nMESSAGE:" ++ message) >> loop
 
     killThread reader
     broadcast ("<-- " ++ clientName ++ " left.")
