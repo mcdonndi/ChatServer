@@ -1,18 +1,20 @@
 module Main where
 
 import Network.Socket
+import System.Environment
 import System.IO
 import Control.Exception
 import Control.Concurrent
 import Control.Monad (when)
 import Control.Monad.Fix (fix)
---import Lines
 
 main :: IO ()
 main = do
+    args <- getArgs
+    let port = fromIntegral (read $ head args :: Int)
     sock <- socket AF_INET Stream 0
     setSocketOption sock ReuseAddr 1
-    bind sock (SockAddrInet 4242 iNADDR_ANY)
+    bind sock (SockAddrInet port iNADDR_ANY)
     listen sock 2
     chan <- newChan
     _ <- forkIO $ fix $ \loop -> do
