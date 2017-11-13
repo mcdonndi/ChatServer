@@ -27,11 +27,11 @@ type Msg = (Int, String)
 mainLoop :: Socket -> Chan Msg -> Int -> IO ()
 mainLoop sock chan msgNum = do
     conn <- accept sock
-    forkIO (runConn conn chan msgNum)
+    forkIO (runConn conn chan msgNum sock)
     mainLoop sock chan $! msgNum + 1
 
-runConn :: (Socket, SockAddr) -> Chan Msg -> Int -> IO ()
-runConn (sock, _) chan msgNum = do
+runConn :: (Socket, SockAddr) -> Chan Msg -> Int -> Socket -> IO ()
+runConn (sock, _) chan msgNum mainLoopSock = do
     let broadcast msg = writeChan chan (msgNum, msg)
     hdl <- socketToHandle sock ReadWriteMode
     hSetBuffering hdl NoBuffering
@@ -78,6 +78,7 @@ runConn (sock, _) chan msgNum = do
         case chatroomKey of
             -- if an exception is caught, send a message and break the loop
             "LEAVE_CHATROOM"  -> hPutStrLn hdl ("DISCONNECT: 0\nPORT: 0\nCLIENT_NAME:" ++ clientName)
+            "KILL_SERVICE"    -> close mainLoopSock
             -- else continue looping
             _       -> broadcast ("CHAT:" ++ chatroom ++ "\nCLIENT_NAME:" ++ clientName ++ "\nMESSAGE:" ++ message) >> loop
 

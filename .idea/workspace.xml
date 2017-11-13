@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="39b528ff-a23c-4023-81f9-72a76c8c7d7e" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/dist/build/ChatServer/ChatServer.exe" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Main.hs" afterPath="$PROJECT_DIR$/Main.hs" />
     </list>
     <ignored path="$PROJECT_DIR$/.stack-work/" />
     <ignored path="$PROJECT_DIR$/dist/" />
@@ -50,7 +50,7 @@
         <entry file="file://$PROJECT_DIR$/Main.hs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="299">
-              <caret line="85" column="14" lean-forward="false" selection-start-line="85" selection-start-column="14" selection-end-line="85" selection-end-column="14" />
+              <caret line="80" column="51" lean-forward="false" selection-start-line="80" selection-start-column="51" selection-end-line="80" selection-end-column="51" />
               <folding />
             </state>
           </provider>
@@ -97,8 +97,8 @@
       <list>
         <option value="$PROJECT_DIR$/ChatServer.cabal" />
         <option value="$PROJECT_DIR$/compile.sh" />
-        <option value="$PROJECT_DIR$/Main.hs" />
         <option value="$PROJECT_DIR$/start.sh" />
+        <option value="$PROJECT_DIR$/Main.hs" />
       </list>
     </option>
   </component>
@@ -709,7 +709,7 @@
     <entry file="file://$PROJECT_DIR$/Main.hs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
-          <caret line="85" column="14" lean-forward="false" selection-start-line="85" selection-start-column="14" selection-end-line="85" selection-end-column="14" />
+          <caret line="80" column="51" lean-forward="false" selection-start-line="80" selection-start-column="51" selection-end-line="80" selection-end-column="51" />
           <folding />
         </state>
       </provider>
