@@ -68,20 +68,14 @@ runConn (sock, sockAddr) chan msgNum mainLoopSock serverPort = do
     -- read lines from the socket and echo them back to the user
     handle (\(SomeException _) -> return()) $ fix $ \loop -> do
         chatroom_ <- fmap init (hGetLine hdl)
-        join_id <- fmap init (hGetLine hdl)
-        client_name <- fmap init (hGetLine hdl)
-        message_ <- fmap init (hGetLine hdl)
         let chatroomKey = takeWhile (/=':') chatroom_
         let chatroom = dropWhile (/=' ') chatroom_
-        let clientName = dropWhile (/=' ') client_name
-        let message = dropWhile (/=' ') message_
         case chatroomKey of
             -- if an exception is caught, send a message and break the loop
-            "LEAVE_CHATROOM"    -> hPutStrLn hdl ("DISCONNECT: 0\nPORT: 0\nCLIENT_NAME:" ++ clientName)
             "KILL_SERVICE"      -> close mainLoopSock
             "HELO text"         -> handleHeloText hdl serverPort sockAddr >> loop
             -- else continue looping
-            _                   -> broadcast ("CHAT:" ++ chatroom ++ "\nCLIENT_NAME:" ++ clientName ++ "\nMESSAGE:" ++ message) >> loop
+            _                   -> leaveOrMessageHandler hdl chatroomKey chatroom broadcast loop
 
     killThread reader
     broadcast ("<-- " ++ clientName ++ " left.")
@@ -99,3 +93,18 @@ handleHeloText :: Handle -> PortNumber -> SockAddr -> IO()
 handleHeloText hdl serverPort sockAddr = do
     (Just hostName, _) <- getNameInfo [] True False sockAddr
     hPutStrLn hdl ("HELO text\nIP: "++ hostName ++ "\nPort:" ++ show serverPort ++ "\nStudentID:13324902\n")
+
+leaveOrMessageHandler :: Handle -> String -> String -> (String -> IO()) -> IO() -> IO()
+leaveOrMessageHandler hdl chatroomKey chatroom broadcast loop = do
+    join_id <- fmap init (hGetLine hdl)
+    client_name <- fmap init (hGetLine hdl)
+    let clientName = dropWhile (/=' ') client_name
+    case chatroomKey of
+        "LEAVE_CHATROOM"    -> hPutStrLn hdl ("DISCONNECT: 0\nPORT: 0\nCLIENT_NAME:" ++ clientName)
+        _                   -> messageHandler hdl chatroom clientName broadcast loop
+
+messageHandler :: Handle -> String -> String -> (String -> IO()) -> IO() -> IO()
+messageHandler hdl chatroom clientName broadcast loop = do
+    message_ <- fmap init (hGetLine hdl)
+    let message = dropWhile (/=' ') message_
+    broadcast ("CHAT:" ++ chatroom ++ "\nCLIENT_NAME:" ++ clientName ++ "\nMESSAGE:" ++ message) >> loop
