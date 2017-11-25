@@ -44,7 +44,7 @@ runConn (sock, sockAddr) chan msgNum mainLoopSock serverPort = do
     -- fork off a thread for reading from the duplicated channel
     reader <- forkIO $ fix $ \loop -> do
         (nextNum, line) <- readChan commLine
-        when (msgNum /= nextNum) $ hPutStrLn hdl line
+        when (msgNum /= nextNum) $ sendToClients hdl line
         loop
 
     -- read lines from the socket and echo them back to the user
@@ -86,6 +86,7 @@ joinChatroom hdl join_chatroom serverPort broadcast = do
     let clientIP = tail $ dropWhile (/=' ') client_ip
     let clientPort = tail $ dropWhile (/=' ') client_port
     let clientName = tail $ dropWhile (/=' ') client_name
+    printf "Client: %s\n" clientName
 
     hPutStrLn hdl ("JOINED_CHATROOM: " ++ joinChatroom)
     hFlush hdl
@@ -130,4 +131,9 @@ messageHandler :: Handle -> String -> String -> (String -> IO()) -> IO() -> IO()
 messageHandler hdl chatroom clientName broadcast loop = do
     message_ <- hGetLine hdl
     let message = dropWhile (/=' ') message_
-    broadcast ("CHAT:" ++ chatroom ++ "\nCLIENT_NAME:" ++ clientName ++ "\nMESSAGE:" ++ message) >> loop
+    broadcast ("CHAT: " ++ chatroom ++ "\nCLIENT_NAME: " ++ clientName ++ "\nMESSAGE: " ++ message) >> loop
+
+sendToClients :: Handle -> String -> IO()
+sendToClients hdl line = do
+    hPutStrLn hdl line
+    hFlush hdl

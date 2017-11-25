@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="39b528ff-a23c-4023-81f9-72a76c8c7d7e" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/dist/build/ChatServer/ChatServer.exe" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Main.hs" afterPath="$PROJECT_DIR$/Main.hs" />
     </list>
     <ignored path="$PROJECT_DIR$/.stack-work/" />
@@ -50,8 +48,8 @@
       <file leaf-file-name="Main.hs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Main.hs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="436">
-              <caret line="35" column="33" lean-forward="false" selection-start-line="35" selection-start-column="24" selection-end-line="35" selection-end-column="33" />
+            <state relative-caret-position="2688">
+              <caret line="137" column="13" lean-forward="false" selection-start-line="137" selection-start-column="4" selection-end-line="137" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -93,8 +91,8 @@
       <find>hGetL</find>
       <find>socket</find>
       <find>hPutStr</find>
-      <find>hPutStrLn</find>
       <find>writeChan</find>
+      <find>hPutStrLn</find>
     </findStrings>
     <replaceStrings>
       <replace>head (requestSplit)</replace>
@@ -748,8 +746,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.hs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="436">
-          <caret line="35" column="33" lean-forward="false" selection-start-line="35" selection-start-column="24" selection-end-line="35" selection-end-column="33" />
+        <state relative-caret-position="2688">
+          <caret line="137" column="13" lean-forward="false" selection-start-line="137" selection-start-column="4" selection-end-line="137" selection-end-column="13" />
           <folding />
         </state>
       </provider>
